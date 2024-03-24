@@ -30,6 +30,7 @@ sh get-docker.sh > /dev/null 2>&1
 echo "Done"
 
 echo "STEP 5: C-Group Error Fix and Restarting Components"
+sudo mkdir -p /etc/docker
 echo "{ \n \"exec-opts\": [\"native.cgroupdriver=systemd\"]\n}" | sudo tee /etc/docker/daemon.json 1>/dev/null
 sudo systemctl daemon-reload 1>/dev/null
 sudo systemctl restart docker 1>/dev/null
@@ -37,7 +38,7 @@ echo "Done"
 
 echo "STEP 6: Installing Kubernetes master components"
 echo "Installing kubelet"
-apt-get install -y kubelet=1.23.8-00 kubeadm=1.23.8-00 kubectl=1.23.8-00 kubernetes-cni 1>/dev/null
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni=0.8.7-00 1>/dev/null
 echo "Done"
 
 echo -e "\n################################################################ \n"
