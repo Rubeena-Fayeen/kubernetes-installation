@@ -33,13 +33,20 @@ echo "STEP 5: C-Group Error Fix and Restarting Components"
 sudo mkdir -p /etc/docker
 echo "{ \n \"exec-opts\": [\"native.cgroupdriver=systemd\"]\n}" | sudo tee /etc/docker/daemon.json 1>/dev/null
 sudo systemctl daemon-reload 1>/dev/null
-sudo systemctl restart docker 1>/dev/null
-echo "Done"
+if sudo systemctl restart docker.service; then
+  echo "Docker service restarted successfully"
+else
+  echo "Failed to restart Docker service"
+fi
 
 echo "STEP 6: Installing Kubernetes master components"
-echo "Installing kubelet"
-apt-get install -y kubelet kubeadm kubectl kubernetes-cni=0.8.7-00 1>/dev/null
-echo "Done"
+echo "Installing kubelet, kubeadm, kubectl, and kubernetes-cni"
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni 1>/dev/null
+if [ $? -eq 0 ]; then
+  echo "Kubernetes master components installed successfully"
+else
+  echo "Failed to install Kubernetes master components"
+fi
 
 echo -e "\n################################################################ \n"
 echo "Kubernetes node template is now created"
